@@ -39,59 +39,39 @@ window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
   var solutionStorage = [];
 
-  var board = new Board({n: n});
-   console.dir(board);
-  var matrix = board.rows();
-  var firstRow = matrix [0];
+  var rooksBoardx = new Board({n: n});
+  var matrix = rooksBoardx.rows();
+  var firstRow = matrix[0];
 
 
 
-  var recursiveAdd = function(board, targetRow, rowsRemaining){
-    console.log("RECURSIVE FUNCTION BEGIN");
-
+  var recursiveAdd = function(rooksBoardx, targetRow, rowsRemaining){
     if(rowsRemaining === 0){
-      console.log("thinks we're done");
-      solutionStorage.push(board.rows());
+      solutionStorage.push(rooksBoardx.rows());
       solutionCount++;
-      console.log(solutionCount);
       return;
     }
 
-    for(var j=0; j< n; j++){
-      //console.log("in loop");
-      //console.log(matrix);
-      matrix[targetRow][j] = 1;
-      console.log(matrix[targetRow]);
-      console.log(targetRow);
+    for(var j = 0; j < n; j++){
 
-      board.set(targetRow, matrix[targetRow]);
-      console.dir(board);
-        if(board.hasAnyRooksConflicts()){
-          matrix[targetRow][j] = 0;
-          board.set(targetRow, matrix[targetRow]);
-          //console.log(board.rows());
-          return;
+      rooksBoardx.togglePiece(targetRow, j);
 
-        }
-
-          console.log("recursive")
-
-          recursiveAdd(board, targetRow + 1, rowsRemaining -1);
-
-
+      if(rooksBoardx.hasAnyRooksConflicts()){
+        rooksBoardx.togglePiece(targetRow, j);
+      } else{
+        recursiveAdd(rooksBoardx, targetRow + 1, rowsRemaining - 1);
+        rooksBoardx.togglePiece(targetRow, j);
+      }
     }
-  }
+  };
 
 
   for(var i = 0; i < n; i++){
 
-    //console.dir(board);
-    firstRow[i] =  1;
-    board.set(0, firstRow);
-
-    recursiveAdd(board, 1, n-1);
-    var board = new Board({n:n});
-    matrix = board.rows();
+    rooksBoardx.togglePiece(0, i);
+    recursiveAdd(rooksBoardx, 1, n - 1);
+    var rooksBoardx = new Board({n:n});
+    matrix = rooksBoardx.rows();
     firstRow = matrix[0];
 
 
