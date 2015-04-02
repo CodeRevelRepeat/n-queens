@@ -16,6 +16,7 @@
 window.findNRooksSolution = function(n) {
   var board = new Board({n: n});
 
+
   var solution = board.rows();
   var start = 0;
 
@@ -24,7 +25,7 @@ window.findNRooksSolution = function(n) {
     start ++;
   }
 
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+  // console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
 
@@ -32,59 +33,89 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
+  if(n === 1){
+    return 1;
+  }
   var solutionCount = 0;
+  var solutionStorage = [];
 
-  var board = newBoard({n: n});
-  var clearRow = function(){
-    return [0, 0, 0];
-  };
-
-  var row = board.get(0);
-  // get first row of board
-  row[0] = 1;
-  // set first element of this row to 1
-  board.set(0, row)
-  // insert this row with the 1 into the board
-  board.hasAnyRooksConflicts; //false
-  // check if the board has any conflicts
-
-  //if no conflicts, move to next row of board
-  row = board.get(0+1);
-  // get next row of board
-  row[0] = 1;
-  // set first element of this row to 1
-  board.set(0+1, row);
-  // insert this row with the 1 into the board
-  board.hasAnyRooksConflicts; //true
-  // check for conflicts
-    // if there is a conflict
-    board.set(0+1, [0, 0, 0]);
-    // reset row in board to all 0's
-    row = [0, 0, 0];
-    // reset practice row
-  row[0+1] = 1;
-  // move to next element in row, add a value
-  board.set(0+1, row);
-  // insert modified row into board
-  board.hasAnyRooksConflicts; //false
-  // check for conflicts
-
-  row = board.get(0+1+1)
-
-
-//get complete board...
-//increment solutionCount
-//reset
-//start over with first row second element to 1
+  var board = new Board({n: n});
+   console.dir(board);
+  var matrix = board.rows();
+  var firstRow = matrix [0];
 
 
 
+  var recursiveAdd = function(board, targetRow, rowsRemaining){
+    console.log("RECURSIVE FUNCTION BEGIN");
+
+    if(rowsRemaining === 0){
+      console.log("thinks we're done");
+      solutionStorage.push(board.rows());
+      solutionCount++;
+      console.log(solutionCount);
+      return;
+    }
+
+    for(var j=0; j< n; j++){
+      //console.log("in loop");
+      //console.log(matrix);
+      matrix[targetRow][j] = 1;
+      console.log(matrix[targetRow]);
+      console.log(targetRow);
+
+      board.set(targetRow, matrix[targetRow]);
+      console.dir(board);
+        if(board.hasAnyRooksConflicts()){
+          matrix[targetRow][j] = 0;
+          board.set(targetRow, matrix[targetRow]);
+          //console.log(board.rows());
+          return;
+
+        }
+
+          console.log("recursive")
+
+          recursiveAdd(board, targetRow + 1, rowsRemaining -1);
+
+
+    }
+  }
+
+
+  for(var i = 0; i < n; i++){
+
+    //console.dir(board);
+    firstRow[i] =  1;
+    board.set(0, firstRow);
+
+    recursiveAdd(board, 1, n-1);
+    var board = new Board({n:n});
+    matrix = board.rows();
+    firstRow = matrix[0];
+
+
+
+  }
+
+
+   //create 000 board
+  //Insert first rook, go down tree to child
+  //add rook to first child
+    //check if conflict
+    //  if conflict, stop and restore to 0, go to sibling insert rook
+    //  if not conflict, move to next child and insert rook
+    //  keeps going until no more board and then push game solution
+    //
+    //  reset whole board
+    //  rook to second position first row, repeat
+  //
 
 
 
 
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  //console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
 
@@ -94,7 +125,7 @@ window.countNRooksSolutions = function(n) {
 window.findNQueensSolution = function(n) {
   var solution = undefined; //fixme
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
+  //console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
 };
 
@@ -103,6 +134,6 @@ window.findNQueensSolution = function(n) {
 window.countNQueensSolutions = function(n) {
   var solutionCount = undefined; //fixme
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  //console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
